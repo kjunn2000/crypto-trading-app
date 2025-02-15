@@ -2,20 +2,18 @@ package com.kai.crypto_trading_app.service;
 
 import com.kai.crypto_trading_app.model.CryptoPair;
 import com.kai.crypto_trading_app.repository.CryptoPairRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,6 +41,7 @@ public class PriceAggregationScheduler {
 
     @Scheduled(fixedRate = 10000)
     public void aggregatePrices() {
+        // Fetch prices from Binance and Huobi
         List<Map<String, Object>> binancePrices = fetchBinancePrices();
         List<Map<String, Object>> huobiPrices = fetchHuobiPrices();
 
@@ -52,7 +51,11 @@ public class PriceAggregationScheduler {
 
     private List<Map<String, Object>> fetchBinancePrices() {
         try {
-            String urlWithParam = binanceApiUrl + "?symbols=[\"ETHUSDT\",\"BTCUSDT\"]";
+            // Construct URL with supported pairs
+            String symbolsParam = SUPPORTED_PAIRS.stream()
+                    .map(pair -> "\"" + pair + "\"")
+                    .collect(Collectors.joining(","));
+            String urlWithParam = binanceApiUrl + "?symbols=[" + symbolsParam + "]";
 
             return restTemplate.getForObject(urlWithParam, List.class);
         } catch (HttpStatusCodeException e) {
@@ -67,6 +70,7 @@ public class PriceAggregationScheduler {
 
     private List<Map<String, Object>> fetchHuobiPrices() {
         try {
+            // Fetch data from Huobi API
             Map<String, Object> response = restTemplate.getForObject(huobiApiUrl, Map.class);
             return (List<Map<String, Object>>) response.get("data");
         } catch (HttpStatusCodeException e) {
@@ -80,7 +84,7 @@ public class PriceAggregationScheduler {
     }
 
     private void processAndStorePrices(List<Map<String, Object>> binancePrices, List<Map<String, Object>> huobiPrices) {
-        Map<String, BigDecimal[]> bestPrices = new HashMap<>(); // Use an array to store bid and ask prices
+        Map<String, BigDecimal[]> bestPrices = new HashMap<>(); // Store best bid and ask prices
 
         if (binancePrices != null && !binancePrices.isEmpty()) {
             extractBestPrices(binancePrices, bestPrices);
@@ -89,7 +93,7 @@ public class PriceAggregationScheduler {
         }
 
         if (huobiPrices != null && !huobiPrices.isEmpty()) {
-            // Filter out records that don't have supported crypto pairs
+            // Filter and normalize Huobi prices
             huobiPrices = huobiPrices.stream()
                     .filter(price -> SUPPORTED_PAIRS.contains(((String) price.get("symbol")).toUpperCase()))
                     .peek(price -> {
@@ -102,7 +106,7 @@ public class PriceAggregationScheduler {
             logger.warn("No Huobi prices to process.");
         }
 
-        // Store the best prices
+        // Update database with best prices
         for (Map.Entry<String, BigDecimal[]> entry : bestPrices.entrySet()) {
             String symbol = entry.getKey();
             BigDecimal[] prices = entry.getValue();
@@ -121,6 +125,7 @@ public class PriceAggregationScheduler {
             if (currentPrices == null) {
                 bestPrices.put(symbol, new BigDecimal[]{bidPrice, askPrice});
             } else {
+                // Update best bid and ask prices
                 BigDecimal bestBid = currentPrices[0].max(bidPrice);
                 BigDecimal bestAsk = currentPrices[1].min(askPrice);
                 bestPrices.put(symbol, new BigDecimal[]{bestBid, bestAsk});
@@ -132,6 +137,7 @@ public class PriceAggregationScheduler {
         Optional<CryptoPair> cryptoPair = cryptoPairRepository.findByPairName(symbol);
         
         if (cryptoPair.isPresent()) {
+            // Update and save the crypto pair prices
             cryptoPair.get().setBidPrice(bidPrice);
             cryptoPair.get().setAskPrice(askPrice);
             cryptoPairRepository.save(cryptoPair.get());

@@ -1,15 +1,15 @@
 package com.kai.crypto_trading_app.service;
 
-import com.kai.crypto_trading_app.dto.TransactionHistoryResponse;
-import com.kai.crypto_trading_app.dto.TransactionResponse;
 import com.kai.crypto_trading_app.dto.TradeRequestDTO;
 import com.kai.crypto_trading_app.dto.TradeResponseDTO;
-import com.kai.crypto_trading_app.model.Transaction;
+import com.kai.crypto_trading_app.dto.TransactionHistoryResponse;
+import com.kai.crypto_trading_app.dto.TransactionResponse;
 import com.kai.crypto_trading_app.model.CryptoPair;
+import com.kai.crypto_trading_app.model.Transaction;
 import com.kai.crypto_trading_app.model.User;
 import com.kai.crypto_trading_app.model.UserCryptoBalance;
-import com.kai.crypto_trading_app.repository.TransactionRepository;
 import com.kai.crypto_trading_app.repository.CryptoPairRepository;
+import com.kai.crypto_trading_app.repository.TransactionRepository;
 import com.kai.crypto_trading_app.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

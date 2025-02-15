@@ -1,7 +1,6 @@
 package com.kai.crypto_trading_app.service;
 
 import com.kai.crypto_trading_app.dto.CryptoPairDTO;
-import com.kai.crypto_trading_app.model.CryptoPair;
 import com.kai.crypto_trading_app.repository.CryptoPairRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
