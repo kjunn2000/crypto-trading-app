@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,8 +114,8 @@ public class PriceAggregationScheduler {
         for (Map<String, Object> priceData : prices) {
             String symbol = (String) priceData.get("symbol");
 
-            BigDecimal bidPrice = new BigDecimal(priceData.get("bidPrice").toString());
-            BigDecimal askPrice = new BigDecimal(priceData.get("askPrice").toString());
+            BigDecimal bidPrice = new BigDecimal(priceData.get("bidPrice").toString()).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal askPrice = new BigDecimal(priceData.get("askPrice").toString()).setScale(2, RoundingMode.HALF_UP);
 
             BigDecimal[] currentPrices = bestPrices.get(symbol);
             if (currentPrices == null) {
