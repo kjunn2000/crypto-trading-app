@@ -1,4 +1,4 @@
-# Crypto Trading System
+# Crypto Trading System (Java)
 
 ## Assumptions
 
