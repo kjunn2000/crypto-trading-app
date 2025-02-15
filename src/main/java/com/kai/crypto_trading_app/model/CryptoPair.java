@@ -9,7 +9,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "CRYPTO_PAIR")
+@Table(name = "crypto_pair")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

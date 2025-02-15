@@ -13,6 +13,7 @@ public class TransactionResponse {
     private String pairName;
     private String transactionType;
     private BigDecimal amount;
-    private BigDecimal price;
+    private BigDecimal unitPrice;
+    private BigDecimal totalPrice;
     private LocalDateTime timestamp;
 } 

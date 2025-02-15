@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "TRANSACTION")
+@Table(name = "transaction")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,12 +31,15 @@ public class Transaction {
     @Column(name = "transaction_type", nullable = false)
     private String transactionType;
 
-    @Column(nullable = false, precision = 19, scale = 8)
+    @Column(name = "amount", nullable = false, precision = 19, scale = 8)
     private BigDecimal amount;
 
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal price;
+    @Column(name = "unit_price", nullable = false, precision = 19, scale = 2)
+    private BigDecimal unitPrice;
 
-    @Column(nullable = false)
+    @Column(name = "total_price", nullable = false, precision = 19, scale = 2)
+    private BigDecimal totalPrice;
+
+    @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 }
