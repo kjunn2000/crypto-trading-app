@@ -6,9 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "USER")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,4 +25,7 @@ public class User {
 
     @Column(name = "wallet_balance", nullable = false, precision = 19, scale = 2)
     private BigDecimal walletBalance = BigDecimal.valueOf(50000.00);
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserCryptoBalance> cryptoBalances;
 }

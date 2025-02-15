@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "crypto_pair")
+@Table(name = "CRYPTO_PAIR")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,4 +22,10 @@ public class CryptoPair {
 
     @Column(name = "pair_name", unique = true, nullable = false)
     private String pairName;
+
+    @Column(name = "bid_price", nullable = false, precision = 19, scale = 2)
+    private BigDecimal bidPrice;
+
+    @Column(name = "ask_price", nullable = false, precision = 19, scale = 2)
+    private BigDecimal askPrice;
 }
