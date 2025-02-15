@@ -144,7 +144,7 @@ public class PriceAggregationScheduler {
             cryptoPair.get().setBidPrice(bidPrice);
             cryptoPair.get().setAskPrice(askPrice);
             cryptoPairRepository.save(cryptoPair.get());
-            logger.info("Successfully updated crypto pair price for: {} - {} {}", symbol, bidPrice, askPrice);
+            logger.info("Successfully updated crypto pair price for Symbol: {}, Bid Price: {}, Ask Price: {}", symbol, bidPrice, askPrice);
         } else {
             logger.warn("Crypto pair not found: {}", symbol);
         }

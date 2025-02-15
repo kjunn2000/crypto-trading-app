@@ -70,9 +70,9 @@
      ```json
       {
           "userId": 1,
-          "pairName": "ETHUSDT",
-          "transactionType": "BUY",
-          "amount": 3
+          "pairName": "ETHUSDT", // eg: "ETHUSDT", "BTCUSDT"
+          "transactionType": "BUY",// either "BUY" or "SELL"
+          "amount": 3 // Big Decimal that > 0
       }
       {
           "userId": 1,

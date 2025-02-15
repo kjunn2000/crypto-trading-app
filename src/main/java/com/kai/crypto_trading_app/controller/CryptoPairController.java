@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/crypto-pairs")
+@RequestMapping("/api/prices")
 public class CryptoPairController {
 
     private final CryptoPairService cryptoPairService;
