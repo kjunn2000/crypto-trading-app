@@ -1,4 +1,4 @@
-package com.kai.crypto_trading_app.entity;
+package com.kai.crypto_trading_app.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
