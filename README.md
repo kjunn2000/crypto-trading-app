@@ -5,7 +5,7 @@
 1. Users are already authenticated and authorized to access the APIs.
 2. Users have an initial wallet balance of 50,000 USDT in the database.
 3. Only Ethereum (ETHUSDT) and Bitcoin (BTCUSDT) trading pairs are supported.
-4. The system stores the best bid and ask prices in 2 decimal places.
+4. The system stores the currency values in 2 decimal places.
 
 ## Database Table Structure
 
