@@ -28,14 +28,6 @@ public class UserService {
         return userRepository.findById(userId).map(this::mapToUserWalletResponseDTO);
     }
 
-    @Transactional
-    public User updateWalletBalance(Long userId, BigDecimal newBalance) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.setWalletBalance(newBalance);
-        return userRepository.save(user);
-    }
-
     private UserWalletResponseDTO mapToUserWalletResponseDTO(User user) {
         List<UserCryptoBalanceDTO> cryptoBalances = user.getCryptoBalances().stream()
                 .map(this::mapToUserCryptoBalanceDTO)
@@ -54,4 +46,4 @@ public class UserService {
                 balance.getAmount().doubleValue()
         );
     }
-} 
+}
