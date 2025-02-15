@@ -58,11 +58,13 @@
       ]
      ```
    - **Demo :**
-     <img width="1081" alt="image" src="https://github.com/user-attachments/assets/a95a0c4f-76b8-46f7-9e6f-d541c7a6e8a2" />
+     <img width="1121" alt="image" src="https://github.com/user-attachments/assets/80f72143-5c84-4103-b1bd-6ee93a3c05f8" />
+
 
 
 2. **POST /api/trade**
    - Execute a trade based on the latest best aggregated price.
+   - Allow only Ethereum (ETHUSDT) and Bitcoin (BTCUSDT) for trading.
    - Cater for edge cases (User not found, pair name not found, balance not enough)
    - **Request:**
      ```json
@@ -70,6 +72,12 @@
           "userId": 1,
           "pairName": "ETHUSDT",
           "transactionType": "BUY",
+          "amount": 3
+      }
+      {
+          "userId": 1,
+          "pairName": "ETHUSDT",
+          "transactionType": "SELL",
           "amount": 3
       }
      ```
@@ -149,7 +157,7 @@
           ]
       }
      ```
-   - **Demo: **
+   - **Demo:**
       <img width="1081" alt="image" src="https://github.com/user-attachments/assets/47bd6976-dfbd-49ba-8db2-48924ab360ac" />
 
 
@@ -161,10 +169,9 @@
    - Runs every 10 seconds using Spring's `@Scheduled` annotation
    - Fetches latest prices from Binance and Huobi APIs for configured trading pairs
    (https://huobiapi.github.io/docs/spot/v1/en/#get-latest-tickers-for-all-pairs, https://developers.binance.com/docs/binance-spot-api-docs/testnet/rest-api/market-data-endpoints#symbol-order-book-ticker)
-   - Stores the best prices in `aggregated_prices` table
    - Best ask price is used for SELL orders (lower price)
    - Best bid price is used for BUY orders (higher price)
-   - **Demo: **
+   - **Demo:**
      <img width="1066" alt="image" src="https://github.com/user-attachments/assets/953020b6-a82f-4696-b16e-b0192b707386" />
 
 
