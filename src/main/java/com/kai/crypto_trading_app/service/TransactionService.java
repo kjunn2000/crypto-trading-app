@@ -37,21 +37,17 @@ public class TransactionService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceAggregationScheduler.class);
 
-    @Transactional
-    public Transaction executeTrade(Transaction transaction) {
-        // Additional logic for executing trade can be added here
-        return transactionRepository.save(transaction);
-    }
-
-    public List<Transaction> getTransactionsByUserId(Long userId) {
-        return transactionRepository.findByUserId(userId);
-    }
-
     @Transactional(readOnly = true)
-    public TransactionHistoryResponse getUserTransactionHistory(Long userId) {
+    public Optional<TransactionHistoryResponse> getUserTransactionHistory(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
         List<Transaction> transactions = transactionRepository.findByUserId(userId);
 
         List<TransactionResponse> transactionResponses = transactions.stream()
+            .sorted((t1, t2) -> t2.getTimestamp().compareTo(t1.getTimestamp()))
             .map(transaction -> new TransactionResponse(
                 transaction.getId(),
                 transaction.getPair().getPairName(),
@@ -63,7 +59,7 @@ public class TransactionService {
             ))
             .collect(Collectors.toList());
 
-        return new TransactionHistoryResponse(userId, transactionResponses);
+        return Optional.of(new TransactionHistoryResponse(userId, transactionResponses));
     }
 
     @Transactional
