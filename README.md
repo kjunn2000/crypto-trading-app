@@ -10,29 +10,31 @@
 ## Database Table Structure
 
 ### Users
-- `id` (Primary Key, Integer)
-- `username` (String, Unique)
-- `wallet_balance` (Decimal, default: 50000.00)
+- `id` (Primary Key, BigInt, Auto-generated)
+- `username` (String, Unique, Not Null)
+- `wallet_balance` (Decimal, default: 50000.00, Not Null)
 
 ### CryptoPairs
-- `id` (Primary Key, Integer)
-- `pair_name` (String, Unique, e.g., "ETHUSDT", "BTCUSDT")
+- `id` (Primary Key, BigInt, Auto-generated)
+- `pair_name` (String, Unique, Not Null)
+- `bid_price` (Decimal, Not Null)
+- `ask_price` (Decimal, Not Null)
+
+### UserCryptoBalance
+- `id` (Primary Key, BigInt, Auto-generated)
+- `user_id` (Foreign Key, references Users, Not Null)
+- `currency` (String, Not Null)
+- `amount` (Decimal, Not Null)
 
 ### Transactions
-- `id` (Primary Key, Integer)
-- `user_id` (Foreign Key, references Users)
-- `pair_id` (Foreign Key, references CryptoPairs)
-- `transaction_type` (String, e.g., "BUY", "SELL")
-- `amount` (Decimal)
-- `price` (Decimal)
-- `timestamp` (Timestamp)
-
-### AggregatedPrices
-- `id` (Primary Key, Integer)
-- `pair_id` (Foreign Key, references CryptoPairs)
-- `bid_price` (Decimal)
-- `ask_price` (Decimal)
-- `timestamp` (Timestamp)
+- `id` (Primary Key, BigInt, Auto-generated)
+- `user_id` (Foreign Key, references Users, Not Null)
+- `pair_id` (Foreign Key, references CryptoPairs, Not Null)
+- `transaction_type` (String, Not Null)
+- `amount` (Decimal, Not Null)
+- `unit_price` (Decimal, Not Null)
+- `total_price` (Decimal, Not Null)
+- `timestamp` (Timestamp, Not Null)
 
 ## API Design
 
