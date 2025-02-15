@@ -44,90 +44,115 @@
    - Retrieve the latest best aggregated price for each trading pair.
    - **Response:**
      ```json
-     {
-       "prices": [
-         {
-           "pair_name": "ETHUSDT",
-           "bid_price": 1800.50,
-           "ask_price": 1801.00,
-           "timestamp": "2023-10-01T12:00:00Z"
-         },
-         {
-           "pair_name": "BTCUSDT",
-           "bid_price": 30000.00,
-           "ask_price": 30010.00,
-           "timestamp": "2023-10-01T12:00:00Z"
-         }
-       ]
-     }
+      [
+          {
+              "pairName": "ETHUSDT",
+              "bidPrice": 2690.97,
+              "askPrice": 2690.56
+          },
+          {
+              "pairName": "BTCUSDT",
+              "bidPrice": 97563.18,
+              "askPrice": 97560.79
+          }
+      ]
      ```
+   - **Demo :**
+     <img width="1081" alt="image" src="https://github.com/user-attachments/assets/a95a0c4f-76b8-46f7-9e6f-d541c7a6e8a2" />
+
 
 2. **POST /api/trade**
    - Execute a trade based on the latest best aggregated price.
+   - Cater for edge cases (User not found, pair name not found, balance not enough)
    - **Request:**
      ```json
-     {
-       "userId": 1,
-       "pairName": "ETHUSDT",
-       "transactionType": "BUY",
-       "amount": 0.5
-     }
+      {
+          "userId": 1,
+          "pairName": "ETHUSDT",
+          "transactionType": "BUY",
+          "amount": 3
+      }
      ```
    - **Response:**
      ```json
-     {
-       "transaction_id": 123,
-       "status": "success",
-       "message": "Trade executed successfully."
-     }
+      {
+          "transactionId": 1,
+          "status": "success",
+          "message": "Trade executed successfully."
+      }
+      {
+          "status": "failure",
+          "message": "Crypto pair not found."
+      }
+      {
+          "status": "failure",
+          "message": "User not found."
+      }
+      {
+          "status": "failure",
+          "message": "Invalid transaction type or insufficient balance."
+      }
      ```
+   - **Demo:**
+     <img width="1095" alt="image" src="https://github.com/user-attachments/assets/d98ab0bc-2257-486d-92c7-f48486e1fdbd" />
 
 3. **GET /api/wallet/{userId}**
    - Retrieve the user's crypto currencies wallet balance.
+   - Return 404 if user id not found.
    - **Response:**
      ```json
-     {
-       "user_id": 1,
-       "wallet_balance": 49500.00,
-       "currencies": [
-         {
-           "currency": "ETH",
-           "amount": 1.5
-         },
-         {
-           "currency": "BTC",
-           "amount": 0.2
-         }
-       ]
-     }
+      {
+          "userId": 1,
+          "walletBalance": 44363.51,
+          "currencies": [
+              {
+                  "currency": "ETHUSDT",
+                  "amount": 3.0
+              },
+              {
+                  "currency": "BTCUSDT",
+                  "amount": 1.0
+              }
+          ]
+      }
      ```
+   - **Demo :**
+     <img width="1081" alt="image" src="https://github.com/user-attachments/assets/2a1a0aad-6b9c-46ca-bb1a-4f44bf92270e" />
+
 
 4. **GET /api/transactions/{userId}**
-   - Retrieve the user's trading history.
+   - Retrieve the user's trading history and sorted the transaction by timestamp.
+   - Return 404 if user id not found.
    - **Response:**
      ```json
-     {
-       "user_id": 1,
-       "transactions": [
-         {
-           "transaction_id": 123,
-           "pair_name": "ETHUSDT",
-           "transaction_type": "BUY",
-           "amount": 0.5,
-           "price": 1800.50,
-           "timestamp": "2023-10-01T12:00:00Z"
-         },
-         {
-           "transaction_id": 124,
-           "pair_name": "BTCUSDT",
-           "transaction_type": "SELL",
-           "amount": 0.1,
-           "price": 30000.00,
-           "timestamp": "2023-10-01T12:05:00Z"
-         }
-       ]
-     }
+      {
+          "userId": 1,
+          "transactions": [
+              {
+                  "transactionId": 2,
+                  "pairName": "BTCUSDT",
+                  "transactionType": "BUY",
+                  "amount": 1.00000000,
+                  "unitPrice": 97560.79,
+                  "totalPrice": 97560.79,
+                  "timestamp": "2025-02-16T01:14:03.838069"
+              },
+              {
+                  "transactionId": 1,
+                  "pairName": "ETHUSDT",
+                  "transactionType": "BUY",
+                  "amount": 3.00000000,
+                  "unitPrice": 2691.90,
+                  "totalPrice": 8075.70,
+                  "timestamp": "2025-02-16T01:07:29.256994"
+              }
+          ]
+      }
      ```
+   - **Demo: **
+      <img width="1081" alt="image" src="https://github.com/user-attachments/assets/47bd6976-dfbd-49ba-8db2-48924ab360ac" />
+
+
      
 
 ## Scheduler Logic
@@ -139,6 +164,8 @@
    - Stores the best prices in `aggregated_prices` table
    - Best ask price is used for SELL orders (lower price)
    - Best bid price is used for BUY orders (higher price)
+   - **Demo: **
+     <img width="1066" alt="image" src="https://github.com/user-attachments/assets/953020b6-a82f-4696-b16e-b0192b707386" />
 
 
 
@@ -155,5 +182,7 @@
      ```
      build/reports/jacoco/test/html/index.html
      ```
-   - Open in browser to view detailed coverage metrics
-   
+   - Open in browser to view detailed coverage metrics （84% for service classes and 100% for controller classes)
+      <img width="1178" alt="image" src="https://github.com/user-attachments/assets/31253f31-78e4-4b10-b46c-568890f24fb7" />
+
+
