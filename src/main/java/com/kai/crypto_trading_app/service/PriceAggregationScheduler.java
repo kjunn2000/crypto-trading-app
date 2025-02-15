@@ -29,17 +29,20 @@ public class PriceAggregationScheduler {
     @Value("${huobi.api.url}")
     private String huobiApiUrl;
 
+    @Value("${price.aggregation.cron.expression}")
+    private String priceAggregationCronExpression;
+
     private static final List<String> SUPPORTED_PAIRS = Arrays.asList("ETHUSDT", "BTCUSDT");
 
     private static final Logger logger = LoggerFactory.getLogger(PriceAggregationScheduler.class);
 
     @Autowired
-    public PriceAggregationScheduler(CryptoPairRepository cryptoPairRepository) {
+    public PriceAggregationScheduler(CryptoPairRepository cryptoPairRepository, RestTemplate restTemplate) {
         this.cryptoPairRepository = cryptoPairRepository;
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(cron = "${price.aggregation.cron.expression}")
     public void aggregatePrices() {
         // Fetch prices from Binance and Huobi
         List<Map<String, Object>> binancePrices = fetchBinancePrices();
@@ -83,7 +86,7 @@ public class PriceAggregationScheduler {
         return List.of(); // Return an empty list in case of error
     }
 
-    private void processAndStorePrices(List<Map<String, Object>> binancePrices, List<Map<String, Object>> huobiPrices) {
+   public void processAndStorePrices(List<Map<String, Object>> binancePrices, List<Map<String, Object>> huobiPrices) {
         Map<String, BigDecimal[]> bestPrices = new HashMap<>(); // Store best bid and ask prices
 
         if (binancePrices != null && !binancePrices.isEmpty()) {

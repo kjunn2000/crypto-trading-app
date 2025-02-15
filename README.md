@@ -65,9 +65,9 @@
    - **Request:**
      ```json
      {
-       "user_id": 1,
-       "pair_name": "ETHUSDT",
-       "transaction_type": "BUY",
+       "userId": 1,
+       "pairName": "ETHUSDT",
+       "transactionType": "BUY",
        "amount": 0.5
      }
      ```
@@ -135,5 +135,23 @@
    - Fetches latest prices from Binance and Huobi APIs for configured trading pairs
    (https://huobiapi.github.io/docs/spot/v1/en/#get-latest-tickers-for-all-pairs, https://developers.binance.com/docs/binance-spot-api-docs/testnet/rest-api/market-data-endpoints#symbol-order-book-ticker)
    - Stores the best prices in `aggregated_prices` table
-   - Best bid price is used for SELL orders
-   - Best ask price is used for BUY orders
+   - Best ask price is used for SELL orders (lower price)
+   - Best bid price is used for BUY orders (higher price)
+
+
+
+## Running Unit Tests
+
+1. **Execute Tests**
+   - Run all unit tests and generate coverage report:
+     ```bash
+     ./gradlew test jacocoTestReport
+     ```
+
+2. **View Test Coverage Report**
+   - After running tests, coverage report will be generated at:
+     ```
+     build/reports/jacoco/test/html/index.html
+     ```
+   - Open in browser to view detailed coverage metrics
+   
