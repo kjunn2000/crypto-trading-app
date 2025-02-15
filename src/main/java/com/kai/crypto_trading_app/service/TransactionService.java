@@ -41,13 +41,13 @@ public class TransactionService {
     public Optional<TransactionHistoryResponse> getUserTransactionHistory(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            return Optional.empty();
+            return Optional.empty(); // Return empty if user not found
         }
 
         List<Transaction> transactions = transactionRepository.findByUserId(userId);
 
         List<TransactionResponse> transactionResponses = transactions.stream()
-            .sorted((t1, t2) -> t2.getTimestamp().compareTo(t1.getTimestamp()))
+            .sorted((t1, t2) -> t2.getTimestamp().compareTo(t1.getTimestamp())) // Sort transactions by timestamp descending
             .map(transaction -> new TransactionResponse(
                 transaction.getId(),
                 transaction.getPair().getPairName(),
@@ -66,12 +66,12 @@ public class TransactionService {
     public TradeResponseDTO executeTrade(TradeRequestDTO tradeRequest) {
         Optional<CryptoPair> cryptoPairOpt = cryptoPairRepository.findByPairName(tradeRequest.getPairName());
         if (cryptoPairOpt.isEmpty()) {
-            return buildFailureResponse("Crypto pair not found.");
+            return buildFailureResponse("Crypto pair not found."); // Handle case where crypto pair is not found
         }
 
         Optional<User> userOpt = userRepository.findById(tradeRequest.getUserId());
         if (userOpt.isEmpty()) {
-            return buildFailureResponse("User not found.");
+            return buildFailureResponse("User not found."); // Handle case where user is not found
         }
 
         CryptoPair cryptoPair = cryptoPairOpt.get();
@@ -79,7 +79,7 @@ public class TransactionService {
 
         BigDecimal price = determinePriceAndUpdateBalances(tradeRequest, cryptoPair, user);
         if (price == null) {
-            return buildFailureResponse("Invalid transaction type or insufficient balance.");
+            return buildFailureResponse("Invalid transaction type or insufficient balance."); // Handle invalid transaction or insufficient balance
         }
 
         Transaction transaction = createTransaction(tradeRequest, cryptoPair, user, price);
@@ -107,9 +107,9 @@ public class TransactionService {
 
     private BigDecimal determinePriceAndUpdateBalances(TradeRequestDTO tradeRequest, CryptoPair cryptoPair, User user) {
         if ("buy".equalsIgnoreCase(tradeRequest.getTransactionType())) {
-            return handleBuyTransaction(tradeRequest, cryptoPair, user);
+            return handleBuyTransaction(tradeRequest, cryptoPair, user); // Handle buy transaction
         } else if ("sell".equalsIgnoreCase(tradeRequest.getTransactionType())) {
-            return handleSellTransaction(tradeRequest, cryptoPair, user);
+            return handleSellTransaction(tradeRequest, cryptoPair, user); // Handle sell transaction
         }
         return null;
     }
@@ -119,7 +119,7 @@ public class TransactionService {
         BigDecimal totalCost = askPrice.multiply(tradeRequest.getAmount());
 
         if (user.getWalletBalance().compareTo(totalCost) < 0) {
-            return null;
+            return null; // Return null if user has insufficient balance
         }
 
         user.setWalletBalance(user.getWalletBalance().subtract(totalCost));
@@ -132,7 +132,7 @@ public class TransactionService {
         Optional<UserCryptoBalance> userCryptoBalanceOpt = findUserCryptoBalance(user, tradeRequest.getPairName());
 
         if (userCryptoBalanceOpt.isEmpty() || userCryptoBalanceOpt.get().getAmount().compareTo(tradeRequest.getAmount()) < 0) {
-            return null;
+            return null; // Return null if user has insufficient crypto balance
         }
 
         UserCryptoBalance userCryptoBalance = userCryptoBalanceOpt.get();
@@ -149,14 +149,14 @@ public class TransactionService {
 
         if (userCryptoBalanceOpt.isPresent()) {
             UserCryptoBalance userCryptoBalance = userCryptoBalanceOpt.get();
-            userCryptoBalance.setAmount(userCryptoBalance.getAmount().add(amount));
+            userCryptoBalance.setAmount(userCryptoBalance.getAmount().add(amount)); // Update existing balance
         } else {
             UserCryptoBalance newBalance = UserCryptoBalance.builder()
                 .user(user)
                 .currency(currency)
                 .amount(amount)
                 .build();
-            user.getCryptoBalances().add(newBalance);
+            user.getCryptoBalances().add(newBalance); // Add new balance if not present
         }
     }
 
